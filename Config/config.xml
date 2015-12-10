@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config xmlns="http://thelia.net/schema/dic/config"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
+
+    <loops>
+        <loop name="category-tree" class="OptimizeThelia\Loop\CategoryTree" />
+    </loops>
+
+    <forms>
+        <!--
+        <form name="MyFormName" class="OptimizeThelia\Form\MySuperForm" />
+        -->
+    </forms>
+
+    <commands>
+        <!--
+        <command class="OptimizeThelia\Command\MySuperCommand" />
+        -->
+    </commands>
+
+    <!--
+    <services>
+
+    </services>
+    -->
+
+    <!--
+    <hooks>
+        <hook id="optimizethelia.hook" class="OptimizeThelia\Hook\MySuperHook" scope="request">
+            <tag name="hook.event_listener" event="main.body.bottom" type="front|back|pdf|email" method="onMainBodyBottom" />
+        </hook>
+    </hooks>
+    -->
+
+    <!--
+    <exports>
+
+    </exports>
+    -->
+
+    <!--
+    <imports>
+
+    </imports>
+    -->
+</config>
