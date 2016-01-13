@@ -6,6 +6,7 @@
 
     <loops>
         <loop name="category-tree" class="OptimizeThelia\Loop\CategoryTree" />
+        <loop name="feature" class="OptimizeThelia\Loop\Feature" />
     </loops>
 
     <forms>
