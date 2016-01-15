@@ -26,8 +26,6 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
         return new ArgumentCollection(
             Argument::createIntTypeArgument('category', null, true),
             Argument::createIntTypeArgument('depth', PHP_INT_MAX),
-            Argument::createBooleanTypeArgument('need_count_child', false),
-            Argument::createBooleanTypeArgument('need_product_count', false),
             Argument::createBooleanTypeArgument('return_url', true),
             Argument::createBooleanOrBothTypeArgument('visible', true, false),
             Argument::createIntListTypeArgument('exclude', array()),
@@ -49,8 +47,6 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
         }
 
         if ($this->categories === null) {
-            $this->categories = [];
-
             $search = CategoryQuery::create();
             $this->configureI18nProcessing($search, array('TITLE'));
 
@@ -89,26 +85,20 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
 
             $results = $search->find();
 
-            $needCountChild = $this->getNeedCountChild();
             $returnUrl = $this->getReturnUrl();
 
+            $this->categories = $this->container->get('category.cache.service')->getCategoryTree();
             foreach ($results as $result) {
-                if (!isset($this->categories[$result->getParent()])) {
-                    $this->categories[$result->getParent()] = [];
-                }
-                $row = [
+                $row = array_merge($this->categories[$result->getParent()][$result->getId()], [
                     "ID" => $result->getId(),
                     "TITLE" => $result->getVirtualColumn('i18n_TITLE'),
                     "PARENT" => $result->getParent(),
                     "VISIBLE" => $result->getVisible() ? "1" : "0",
-                ];
+                ]);
                 if ($returnUrl) {
                     $row['URL'] = $result->getUrl($this->locale);
                 }
-                if ($needCountChild) {
-                    $row['CHILD_COUNT'] = $result->countChild();
-                }
-                $this->categories[$result->getParent()][] = $row;
+                $this->categories[$result->getParent()][$result->getId()] = $row;
             }
         }
         if (isset($this->categories[$parent])) {
