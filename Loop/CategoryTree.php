@@ -27,7 +27,8 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
             Argument::createIntTypeArgument('category', null, true),
             Argument::createIntTypeArgument('depth', PHP_INT_MAX),
             Argument::createBooleanTypeArgument('need_count_child', false),
-            Argument::createBooleanTypeArgument('need_url', false),
+            Argument::createBooleanTypeArgument('need_product_count', false),
+            Argument::createBooleanTypeArgument('return_url', true),
             Argument::createBooleanOrBothTypeArgument('visible', true, false),
             Argument::createIntListTypeArgument('exclude', array()),
             new Argument(
@@ -89,7 +90,7 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
             $results = $search->find();
 
             $needCountChild = $this->getNeedCountChild();
-            $needUrl = $this->getNeedUrl();
+            $returnUrl = $this->getReturnUrl();
 
             foreach ($results as $result) {
                 if (!isset($this->categories[$result->getParent()])) {
@@ -101,7 +102,7 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
                     "PARENT" => $result->getParent(),
                     "VISIBLE" => $result->getVisible() ? "1" : "0",
                 ];
-                if ($needUrl) {
+                if ($returnUrl) {
                     $row['URL'] = $result->getUrl($this->locale);
                 }
                 if ($needCountChild) {
