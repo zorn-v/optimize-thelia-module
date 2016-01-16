@@ -1,5 +1,5 @@
 {
-  "name": "your-vendor/optimize-thelia-module",
+  "name": "zorn-v/optimize-thelia-module",
   "license": "LGPL-3.0+",
   "type": "thelia-module",
   "require": {
