@@ -32,13 +32,11 @@
         </service>
     </services>
 
-    <!--
     <hooks>
-        <hook id="optimizethelia.hook" class="OptimizeThelia\Hook\MySuperHook" scope="request">
-            <tag name="hook.event_listener" event="main.body.bottom" type="front|back|pdf|email" method="onMainBodyBottom" />
+        <hook id="optimizethelia.hook" class="OptimizeThelia\Hook\Front" scope="request">
+            <tag name="hook.event_listener" event="category.sidebar-body" type="front"/>
         </hook>
     </hooks>
-    -->
 
     <!--
     <exports>
