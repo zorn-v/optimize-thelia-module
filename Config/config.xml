@@ -6,21 +6,8 @@
 
     <loops>
         <loop name="feature" class="OptimizeThelia\Loop\Feature" />
-        <loop name="product" class="OptimizeThelia\Loop\Product" />
         <loop name="category-tree" class="OptimizeThelia\Loop\CategoryTree" />
     </loops>
-
-    <forms>
-        <!--
-        <form name="MyFormName" class="OptimizeThelia\Form\MySuperForm" />
-        -->
-    </forms>
-
-    <commands>
-        <!--
-        <command class="OptimizeThelia\Command\MySuperCommand" />
-        -->
-    </commands>
 
     <services>
         <service id="category.cache.listener" class="OptimizeThelia\EventListeners\CategoryCacheListener">
@@ -33,20 +20,9 @@
     </services>
 
     <hooks>
-        <hook id="optimizethelia.hook" class="OptimizeThelia\Hook\Front" scope="request">
-            <tag name="hook.event_listener" event="category.sidebar-body" type="front"/>
+        <hook id="optimizethelia.hook">
+            <tag name="hook.event_listener" event="category.sidebar-body" type="front" templates="render:category-sidebar.html" />
         </hook>
     </hooks>
 
-    <!--
-    <exports>
-
-    </exports>
-    -->
-
-    <!--
-    <imports>
-
-    </imports>
-    -->
 </config>

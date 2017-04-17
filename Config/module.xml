@@ -5,34 +5,22 @@
     <fullnamespace>OptimizeThelia\OptimizeThelia</fullnamespace>
     <descriptive locale="en_US">
         <title>Optimize some things in thelia</title>
-        <!--
-        <subtitle></subtitle>
-        <description></description>
-        <postscriptum></postscriptum>
-        -->
     </descriptive>
-    <!-- <logo></logo> -->
-    <!--<images-folder>images</images-folder>-->
+    <descriptive locale="ru_RU">
+        <title>Оптимизация по производительности</title>
+    </descriptive>
     <languages>
         <language>en_US</language>
-        <language>fr_FR</language>
+        <language>ru_RU</language>
     </languages>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <authors>
         <author>
-            <name>Zorn</name>
+            <name>zorn-v</name>
             <email>zorn84@bk.ru</email>
         </author>
     </authors>
     <type>classic</type>
-    <!--
-    module dependencies
-    <required>
-        <module version="&gt;=0.1">Front</module>
-        <module version="~1.0">HookCart</module>
-        <module version="&gt;0.2">HookSearch</module>
-    </required>
-    -->
-    <thelia>2.2.0</thelia>
+    <thelia>2.3.0</thelia>
     <stability>other</stability>
 </module>
