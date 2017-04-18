@@ -61,11 +61,13 @@ class Feature extends \Thelia\Core\Template\Loop\Feature
                 }
 
                 foreach ($products as $product) {
-                    $search
-                        ->useFeatureProductQuery()
-                            ->filterByProduct($product)
-                        ->endUse()
-                    ;
+                    if (!$this->getBackendContext()) {
+                        $search
+                            ->useFeatureProductQuery()
+                                ->filterByProduct($product)
+                            ->endUse()
+                        ;
+                    }
                     $tplId = $product->getTemplateId();
 
                     if (! is_null($tplId)) {
