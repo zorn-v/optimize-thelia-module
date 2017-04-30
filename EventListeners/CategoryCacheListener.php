@@ -8,9 +8,11 @@ use Thelia\Core\Event\TheliaEvents;
 
 class CategoryCacheListener extends ContainerAware implements EventSubscriberInterface
 {
-    public function __construct($container)
+    private $categoryCache;
+
+    public function __construct($categoryCache)
     {
-        $this->setContainer($container);
+        $this->categoryCache = $categoryCache;
     }
 
     public static function getSubscribedEvents()
@@ -29,6 +31,6 @@ class CategoryCacheListener extends ContainerAware implements EventSubscriberInt
 
     public function clearCache()
     {
-        $this->container->get('category.cache.service')->generate();
+        $this->categoryCache->clear();
     }
 }

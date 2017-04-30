@@ -8,6 +8,8 @@ use Thelia\Model\CategoryQuery;
 
 class CategoryCache extends ContainerAware
 {
+    const CATEGORY_TREE = 'category.tree';
+
     private $cache;
 
     public function __construct($cacheDir)
@@ -17,7 +19,7 @@ class CategoryCache extends ContainerAware
 
     public function getCategoryTree()
     {
-        $categories = $this->cache->fetch('category.tree');
+        $categories = $this->cache->fetch(self::CATEGORY_TREE);
         if ($categories === false) {
             $categories = $this->generate();
         }
@@ -42,7 +44,12 @@ class CategoryCache extends ContainerAware
                 'PRODUCT_COUNT' => $result->getVirtualColumn('ProductCount')
             ];
         }
-        $this->cache->save('category.tree', $categories);
+        $this->cache->save(self::CATEGORY_TREE, $categories);
         return $categories;
+    }
+
+    public function clear()
+    {
+        $this->cache->delete(self::CATEGORY_TREE);
     }
 }

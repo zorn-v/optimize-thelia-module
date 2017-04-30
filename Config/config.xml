@@ -10,12 +10,12 @@
     </loops>
 
     <services>
-        <service id="category.cache.listener" class="OptimizeThelia\EventListeners\CategoryCacheListener">
-            <tag name="kernel.event_subscriber"/>
-            <argument type="service" id="service_container"/>
-        </service>
         <service id="category.cache.service" class="OptimizeThelia\Service\CategoryCache">
             <argument>%kernel.cache_dir%/category</argument>
+        </service>
+        <service id="category.cache.listener" class="OptimizeThelia\EventListeners\CategoryCacheListener">
+            <tag name="kernel.event_subscriber"/>
+            <argument type="service" id="category.cache.service"/>
         </service>
     </services>
 
