@@ -8,7 +8,6 @@ use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
 use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 use Thelia\Core\Template\Loop\Argument\Argument;
-use Thelia\Model\CategoryQuery;
 use Thelia\Type\TypeCollection;
 use Thelia\Type;
 use Thelia\Type\BooleanOrBothType;
@@ -26,7 +25,6 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
         return new ArgumentCollection(
             Argument::createIntTypeArgument('category', null, true),
             Argument::createIntTypeArgument('depth', PHP_INT_MAX),
-            Argument::createBooleanTypeArgument('return_url', true),
             Argument::createBooleanOrBothTypeArgument('visible', true, false),
             Argument::createIntListTypeArgument('exclude', array()),
             new Argument(
@@ -39,7 +37,6 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
         );
     }
 
-    // changement de rubrique
     protected function buildCategoryTree($parent, $visible, $level, $previousLevel, $maxLevel, $exclude, &$resultsList)
     {
         if ($level > $maxLevel) {
@@ -47,58 +44,58 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
         }
 
         if ($this->categories === null) {
-            $search = CategoryQuery::create();
-            $this->configureI18nProcessing($search, array('TITLE'));
-
-            if ($visible !== BooleanOrBothType::ANY) {
-                $search->filterByVisible($visible);
-            }
-
-            if ($exclude != null) {
-                $search->filterById($exclude, Criteria::NOT_IN);
-            }
+            $categories = $this->container->get('category.cache.service')->getCategoryTree();
+            $locale = $this->getCurrentRequest()->getSession()->getLang()->getLocale();
+            $this->categories = $categories[$locale];
 
             $orders  = $this->getOrder();
 
-            foreach ($orders as $order) {
-                switch ($order) {
+            foreach ($this->categories as $parentId=>$children) {
+                $sortId = [];
+                $sortPosition = [];
+                $sortTitle = [];
+                foreach ($children as $k => $v) {
+                    if ($visible !== BooleanOrBothType::ANY) {
+                        if ($visible && $v['VISIBLE'] == '0') {
+                            unset($this->categories[$parentId][$k]);
+                            continue;
+                        }
+                        if (!$visible && $v['VISIBLE'] == '1') {
+                            unset($this->categories[$parentId][$k]);
+                            continue;
+                        }
+                    }
+                    if (null !== $exclude && in_array($v['ID'], $exclude)) {
+                        unset($this->categories[$parentId][$k]);
+                        continue;
+                    }
+
+                    $sortId[$k] = $v['ID'];
+                    $sortPosition[$k] = $v['POSITION'];
+                    $sortTitle[$k] = $v['TITLE'];
+                }
+
+                switch ($orders[0]) {
                     case "position":
-                        $search->orderByPosition(Criteria::ASC);
+                        array_multisort($sortPosition, SORT_ASC, SORT_NUMERIC, $this->categories[$parentId]);
                         break;
                     case "position_reverse":
-                        $search->orderByPosition(Criteria::DESC);
+                        array_multisort($sortPosition, SORT_DESC, SORT_NUMERIC, $this->categories[$parentId]);
                         break;
                     case "id":
-                        $search->orderById(Criteria::ASC);
+                        array_multisort($sortId, SORT_ASC, SORT_NUMERIC, $this->categories[$parentId]);
                         break;
                     case "id_reverse":
-                        $search->orderById(Criteria::DESC);
+                        array_multisort($sortId, SORT_DESC, SORT_NUMERIC, $this->categories[$parentId]);
                         break;
                     case "alpha":
-                        $search->addAscendingOrderByColumn('i18n_TITLE');
+                        array_multisort($sortTitle, SORT_ASC, $this->categories[$parentId]);
                         break;
                     case "alpha_reverse":
-                        $search->addDescendingOrderByColumn('i18n_TITLE');
+                        array_multisort($sortTitle, SORT_DESC, $this->categories[$parentId]);
                         break;
                 }
-            }
 
-            $results = $search->find();
-
-            $returnUrl = $this->getReturnUrl();
-
-            $this->categories = $this->container->get('category.cache.service')->getCategoryTree();
-            foreach ($results as $result) {
-                $row = array_merge($this->categories[$result->getParent()][$result->getId()], [
-                    "ID" => $result->getId(),
-                    "TITLE" => $result->getVirtualColumn('i18n_TITLE'),
-                    "PARENT" => $result->getParent(),
-                    "VISIBLE" => $result->getVisible() ? "1" : "0",
-                ]);
-                if ($returnUrl) {
-                    $row['URL'] = $result->getUrl($this->locale);
-                }
-                $this->categories[$result->getParent()][$result->getId()] = $row;
             }
         }
         if (isset($this->categories[$parent])) {
@@ -122,7 +119,6 @@ class CategoryTree extends \Thelia\Core\Template\Loop\CategoryTree
         $exclude = $this->getExclude();
 
         $resultsList = array();
-
         $this->categories = null;
         $this->buildCategoryTree($id, $visible, 0, 0, $depth, $exclude, $resultsList);
 

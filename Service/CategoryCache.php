@@ -5,6 +5,7 @@ namespace OptimizeThelia\Service;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Doctrine\Common\Cache\FilesystemCache;
 use Thelia\Model\CategoryQuery;
+use Thelia\Model\LangQuery;
 
 class CategoryCache extends ContainerAware
 {
@@ -36,13 +37,21 @@ class CategoryCache extends ContainerAware
         ;
         $results = $categoryQuery->find();
         foreach ($results as $result) {
-            $categories[$result->getParent()][$result->getId()] = [
-                'ID' => $result->getId(),
-                'PARENT' => $result->getParent(),
-                'VISIBLE' => $result->getVisible() ? "1" : "0",
-                'CHILD_COUNT' => $result->getVirtualColumn('ChildCount'),
-                'PRODUCT_COUNT' => $result->getVirtualColumn('ProductCount')
-            ];
+            $langs = LangQuery::create()
+                ->filterByActive(true)
+            ->find();
+            foreach ($langs as $lang) {
+                $categories[$lang->getLocale()][$result->getParent()][$result->getId()] = [
+                    'ID' => $result->getId(),
+                    'PARENT' => $result->getParent(),
+                    'VISIBLE' => $result->getVisible() ? '1' : '0',
+                    'POSITION' => $result->getPosition(),
+                    'CHILD_COUNT' => $result->getVirtualColumn('ChildCount'),
+                    'PRODUCT_COUNT' => $result->getVirtualColumn('ProductCount'),
+                    'TITLE' => $result->setLocale($lang->getLocale())->getTitle(),
+                    'URL' => $result->getUrl($lang->getLocale()),
+                ];
+            }
         }
         $this->cache->save(self::CATEGORY_TREE, $categories);
         return $categories;
