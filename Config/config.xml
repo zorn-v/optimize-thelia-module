@@ -5,7 +5,6 @@
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
     <loops>
-        <loop name="feature" class="OptimizeThelia\Loop\Feature" />
         <loop name="category-tree" class="OptimizeThelia\Loop\CategoryTree" />
     </loops>
 
