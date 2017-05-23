@@ -33,7 +33,7 @@ class CategoryCache extends ContainerAware
         $categoryQuery = CategoryQuery::create();
         $categoryQuery
             ->withColumn('(SELECT COUNT(*) FROM category ChildCategory WHERE ChildCategory.parent=category.id)', 'ChildCount')
-            ->withColumn('(SELECT COUNT(*) FROM product_category WHERE product_category.category_id=category.id)', 'ProductCount')
+            ->withColumn('(SELECT COUNT(*) FROM product_category INNER JOIN product ON product_category.product_id=product.id AND product.visible=1 WHERE product_category.category_id=category.id)', 'ProductCount')
         ;
         $results = $categoryQuery->find();
         foreach ($results as $result) {

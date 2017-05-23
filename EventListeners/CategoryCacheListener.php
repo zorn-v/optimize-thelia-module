@@ -28,6 +28,7 @@ class CategoryCacheListener extends ContainerAware implements EventSubscriberInt
             TheliaEvents::PRODUCT_DELETE => 'clearCache',
             TheliaEvents::PRODUCT_ADD_CATEGORY => 'clearCache',
             TheliaEvents::PRODUCT_REMOVE_CATEGORY => 'clearCache',
+            TheliaEvents::PRODUCT_TOGGLE_VISIBILITY => 'clearCache',
             TheliaEvents::LANG_UPDATE => 'clearCache',
             TheliaEvents::LANG_CREATE => 'clearCache',
             TheliaEvents::LANG_DELETE => 'clearCache',
