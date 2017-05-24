@@ -1,6 +1,7 @@
 # Optimize Thelia
 
 * `category-tree` loop caching
+* `feature-availability` loop speedup (similar improvement already in thelia/master)
 
 ##### Drawbacks
 
